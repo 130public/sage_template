@@ -1249,6 +1249,61 @@
           "color": "#4c0519",
           "name": "Rose 950",
           "slug": "rose-950"
+        },
+        {
+          "color": "#86c8bc",
+          "name": "Mint",
+          "slug": "mint"
+        },
+        {
+          "color": "#63666a",
+          "name": "Gray",
+          "slug": "gray"
+        },
+        {
+          "color": "#005587",
+          "name": "Dark Blue",
+          "slug": "dark blue"
+        },
+        {
+          "color": "#6fa287",
+          "name": "Green",
+          "slug": "green"
+        },
+        {
+          "color": "#00b2a9",
+          "name": "Teal",
+          "slug": "teal"
+        },
+        {
+          "color": "#6b4c4c",
+          "name": "Brown",
+          "slug": "brown"
+        },
+        {
+          "color": "#6cace4",
+          "name": "Light Blue",
+          "slug": "light blue"
+        },
+        {
+          "color": "#b7a99a",
+          "name": "Tan",
+          "slug": "tan"
+        },
+        {
+          "color": "#4e87a0",
+          "name": "Medium Blue",
+          "slug": "medium blue"
+        },
+        {
+          "color": "#e04e39",
+          "name": "Orange",
+          "slug": "orange"
+        },
+        {
+          "color": "#ffffff",
+          "name": "White",
+          "slug": "white"
         }
       ]
     },
