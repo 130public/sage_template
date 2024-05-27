@@ -83,9 +83,9 @@ add_action('after_setup_theme', function () {
      */
     add_theme_support('html5', [
         'caption',
-        'comment-form',
-        'comment-list',
-        'gallery',
+        //'comment-form',
+        //'comment-list',
+        //'gallery',
         'search-form',
         'script',
         'style',
@@ -112,13 +112,75 @@ add_action('widgets_init', function () {
         'after_title' => '</h3>',
     ];
 
-    register_sidebar([
-        'name' => __('Primary', 'sage'),
-        'id' => 'sidebar-primary',
-    ] + $config);
-
-    register_sidebar([
-        'name' => __('Footer', 'sage'),
-        'id' => 'sidebar-footer',
-    ] + $config);
+    // register_sidebar([
+    //     'name' => __('Primary', 'sage'),
+    //     'id' => 'sidebar-primary',
+    // ] + $config);
 });
+
+
+
+/**
+ * Register the post types.
+ *
+ * @return void
+ */
+add_action( 'init', function() {
+    /**
+     * Testimonials
+    **/
+    register_post_type(
+        'testimonials',
+        array(
+            'labels'          => array(
+                'name'          => __( 'Testimonials' ),
+                'singular_name' => __( 'Testimonial' )
+            ),
+            'public'          => true,
+            'show_ui'         => true,
+            'show_in_rest'    => true,
+            'supports'        => array(
+                'title',
+                'custom-fields',
+            ),
+        )
+    );
+});
+
+/**
+ * Register page types directory with Papi.
+ *
+ * @return string
+ */
+// add_filter( 'papi/settings/directories', function () {
+//     return __DIR__ . '/Providers/PostTypes';
+// } );
+
+/**
+ * Disable Gutenberg
+ *
+ * @return void
+ */
+function disable_gutenberg( $current_status, $post_type ) {
+    return false;
+};
+add_filter( 'use_block_editor_for_post_type', __NAMESPACE__ . '\\disable_gutenberg', 10, 2 );
+
+/**
+ * Disable Comments
+ *
+ * @return void
+ */
+function disable_comments() {
+    return false;
+}
+add_filter( 'comments_open', __NAMESPACE__ . '\\disable_comments', 10 , 2 );
+
+/**
+ * Remove head content
+ *
+ * @return void
+ */
+remove_action('wp_head', 'wp_generator');
+remove_action('wp_head', 'wlwmanifest_link');
+remove_action('wp_head', 'rsd_link');

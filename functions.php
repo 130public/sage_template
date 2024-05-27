@@ -63,3 +63,108 @@ collect(['setup', 'filters'])
             );
         }
     });
+
+
+/*
+|--------------------------------------------------------------------------
+| Register Carbon Fields
+|--------------------------------------------------------------------------
+|
+| Provides structured settings fields unique to this theme.
+| A method support the easy maintainence of email addresses, service IDs, and keys.
+|
+*/
+use Carbon_Fields\Container;
+use Carbon_Fields\Field;
+
+add_action( 'carbon_fields_register_fields', 'crb_attach_theme_options' );
+function crb_attach_theme_options() {
+
+    // Default options page
+    $basic_options_container = Container::make( 'theme_options', __( 'Theme Settings' ) )
+    ->add_fields( array(
+        Field::make( 'separator', 'separator_placeholder', __( 'Sample section' ) ),
+                Field::make( 'text', 'placeholder', 'Sample input' ),
+    ) );
+
+
+    Container::make( 'theme_options', __( 'Analytics' ) )
+        ->set_page_parent( $basic_options_container ) 
+        ->add_fields( array(
+            Field::make( 'separator', 'separator_google', __( 'Google Analytics' ) ),
+                Field::make( 'text', 'ga_id', 'Analytics ID' ),
+                Field::make( 'text', 'gtm_id', 'Tag Manager ID' ),
+                Field::make( 'text', 'gtag_id', 'Tag ID' ),
+                Field::make( 'text', 'google_site_verification', 'Site Verification ID' )
+        ) );
+    
+    Container::make( 'theme_options', __( 'Comms' ) )
+        ->set_page_parent( $basic_options_container ) // reference to a top level container
+        ->add_fields( array(
+            Field::make( 'separator', 'separator_sendgrid', __( 'Contact form settings' ) ),
+                Field::make( 'text', 'sendgrid_to_email', 'Send To - Email Addresses (comma separated)' ),
+                Field::make( 'text', 'sendgrid_to_test', 'Test - Email Addresses (comma separated)' ),
+                Field::make( 'text', 'sendgrid_from_email', 'Send From - Email Address' ),
+                Field::make( 'select', 'email_testing', __( 'Testing enabled' ) )
+                    ->set_options( array(
+                        'true' => 'Yes',
+                        'false' => 'No',
+                    ) )
+        ) );
+
+        Container::make( 'theme_options', __( 'API Keys & Hooks' ) )
+        ->set_page_parent( $basic_options_container ) // reference to a top level container
+        ->add_fields( array(
+            Field::make( 'separator', 'separator_recaptcha', 'Google Recaptcha v3' ),
+                Field::make( 'text', 'recaptcha_client_key', 'Client Key' ),
+                Field::make( 'text', 'recaptcha_secret_key', 'Secret Key' ),
+            Field::make( 'separator', 'separator_sendgrid', __( 'SendGrid' ) ),
+                Field::make( 'text', 'sendgrid_key', 'API Key' ),
+            Field::make( 'separator', 'separator_make', __( 'Make.com' ) ),
+                Field::make( 'text', 'makecom_webhook_url', __( 'Webhook URL' ) ),
+            Field::make( 'separator', 'separator_mailchimp', __( 'MailChimp' ) ),
+                Field::make( 'text', 'mailchimp_key', __( 'API key' ) ),
+                Field::make( 'text', 'mailchimp_list_id', 'MailChimp List ID' ),
+                Field::make( 'text', 'mailchimp_unsubscribe_url', 'MailChimp Unsubscribe URL' ),
+        ) );
+}
+
+add_action( 'carbon_fields_register_fields', 'crb_attach_page_fields' );
+function crb_attach_page_fields() {
+        Container::make( 'post_meta', __( 'Page Data' ) )
+        ->where( 'post_type', '=', 'page' )
+        ->add_fields( array( 
+            Field::make( 'textarea', 'page_details', __( 'Include the full Page' ) ),
+         ) );
+}
+
+add_action( 'carbon_fields_register_fields', 'crb_attach_post_fields' );
+function crb_attach_post_fields() {
+        Container::make( 'post_meta', __( 'Post Data' ) )
+        ->where( 'post_type', '=', 'post' )
+        ->add_fields( array( 
+            Field::make( 'textarea', 'post_details', __( 'Include the full Post' ) ),
+         ) );
+}
+
+add_action( 'carbon_fields_register_fields', 'crb_attach_testimonal_fields' );
+function crb_attach_testimonal_fields() {
+        Container::make( 'post_meta', __( 'Testimonial Data' ) )
+        ->where( 'post_type', '=', 'testimonials' )
+        ->add_fields( array( 
+            Field::make( 'textarea', 'testimonal_details', __( 'Include the full testimonial' ) ),
+         ) );
+
+        Container::make( 'post_meta', __( 'Testimonial Additional' ) )
+        ->where( 'post_type', '=', 'testimonials' )
+        ->add_fields( array( 
+            Field::make( 'text', 'testimonal_author', __( 'Author' ) ),
+         ) );
+
+}
+
+add_action( 'after_setup_theme', 'crb_load' );
+function crb_load() {
+    require_once( 'vendor/autoload.php' );
+    \Carbon_Fields\Carbon_Fields::boot();
+}
