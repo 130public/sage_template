@@ -168,3 +168,79 @@ function crb_load() {
     require_once( 'vendor/autoload.php' );
     \Carbon_Fields\Carbon_Fields::boot();
 }
+
+/*
+|--------------------------------------------------------------------------
+| Wordpress customization
+|--------------------------------------------------------------------------
+|
+| Remove some stuff, replace some defaults, add some new support...
+|
+*/
+/**
+* Remove actions
+*/
+remove_action('wp_head', 'wp_generator');
+remove_action('wp_head', 'wlwmanifest_link');
+remove_action('wp_head', 'rsd_link');
+
+/**
+* Disable Image Resizing
+*/
+add_filter( 'intermediate_image_sizes', '__return_empty_array' );
+
+/**
+ * Clean up the_excerpt()
+ */
+function excerpt_more() {
+    return ' &hellip; <a href="' . get_permalink() . '">' . __('Continued', 'sage') . '</a>';
+}
+add_filter('excerpt_more', __NAMESPACE__ . '\\excerpt_more');
+
+function excerpt_length( $length ) {
+    return 10;
+}
+add_filter( 'excerpt_length', __NAMESPACE__ . '\\excerpt_length');
+
+/**
+ * Post Excerpt Length
+ */
+function custom_excerpt_length( $length ) {
+	return 24;
+}
+add_filter('excerpt_length', __NAMESPACE__ . '\\custom_excerpt_length', 999);
+
+/**
+ * Modify Read More for excerpts
+ */
+ function modify_read_more_link() {
+    return ''; //'<a class="excerpt_link--morelink" href="' . get_permalink() . '">Read More</a>';
+}
+add_filter('the_content_more_link', __NAMESPACE__ . '\\modify_read_more_link', 10, 3);
+add_filter('excerpt_more', __NAMESPACE__ . '\\modify_read_more_link', 10, 3);
+
+/** 
+ * Disable Search
+ */
+function disable_search( $query, $error = true ) {
+    if ( is_search() ) {
+        $query->is_search = false;
+        $query->query_vars['s'] = false;
+        $query->query['s'] = false;
+        // to error
+        if ( $error == true )
+        $query->is_404 = true;
+    }
+}
+add_action( 'parse_query', 'disable_search' );
+add_filter( 'get_search_form', function($a){return null;} );
+  
+/**
+ * Allow upload filetypes
+ */
+function cc_mime_types($mimes) {
+  $mimes['svg'] = 'image/svg+xml';
+  $mimes['mp4'] = 'video/mp4';
+  return $mimes;
+}
+add_filter('upload_mimes', 'cc_mime_types');
